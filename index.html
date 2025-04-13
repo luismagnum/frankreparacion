@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="./images/logo.ico">
+  <link rel="icon" href="/public/logo.ico">
   <title>FrankServices</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -161,7 +161,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <img src="/images/logo.jpeg" alt="Logo" class="logo" />
+      <img src="/public/logo.jpeg" alt="Logo" class="logo" />
       <h1>FrankServices</h1>
     </div>
 
@@ -355,7 +355,7 @@
 
     async function descargarPDF(data) {
       const doc = new jsPDF();
-      const logo = await getImageBase64("/images/logo.jpeg");
+      const logo = await getImageBase64("/public/logo.jpeg");
 
       if (logo) {
         doc.addImage(logo, "JPEG", 15, 10, 30, 30);
