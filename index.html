@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="./public/logo.ico">
+  <title>FrankServices</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    window.jsPDF = window.jspdf.jsPDF;
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #1e293b;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .logo {
+      height: 60px;
+      width: auto;
+      border-radius: 50%;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      margin-top: 20px;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"],
+    textarea,
+    select,
+    #busqueda {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      margin: auto;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .tarjeta {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 15px 0;
+      background-color: #fafafa;
+    }
+
+    .tarjeta button {
+      background-color: #007bff;
+      margin-right: 5px;
+    }
+
+    .tarjeta button:hover {
+      background-color: #0056b3;
+    }
+
+    .tarjeta button:last-child {
+      background-color: #dc3545;
+    }
+
+    .tarjeta button:last-child:hover {
+      background-color: #c82333;
+    }
+
+    .checkbox-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .oculto {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .tarjeta {
+        font-size: 15px;
+      }
+
+      form input,
+      form textarea,
+      form select {
+        font-size: 16px;
+      }
+
+      .checkbox-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="/public/logo.jpeg" alt="Logo" class="logo" />
+      <h1>FrankServices</h1>
+    </div>
+
+    <form id="form-reparacion">
+      <h3>Datos del Cliente</h3>
+      <input type="text" id="nombre" placeholder="Nombre del Cliente" required />
+      <input type="text" id="dni" placeholder="DNI" required />
+      <input type="tel" id="telefono" placeholder="Teléfono" required />
+
+      <h3>Datos del Dispositivo</h3>
+      <input type="text" id="tipo" placeholder="Tipo de equipo" required />
+      <input type="text" id="marca" placeholder="Marca del dispositivo" required />
+      <input type="text" id="modelo" placeholder="Modelo" required />
+      <input type="text" id="serial" placeholder="Serial" />
+      <input type="text" id="tipoReparacion" placeholder="Tipo de reparación" />
+      <input type="text" id="falla" placeholder="Falla reportada" />
+      <input type="text" id="estadoGeneral" placeholder="Estado general del equipo" />
+      <input type="text" id="accesorios" placeholder="Accesorios entregados" />
+      <input type="number" id="costo" placeholder="Costo de reparación ($)" step="0.01" />
+
+      <label>Estado de la reparación</label>
+      <div class="checkbox-group">
+        <label><input type="radio" name="estadoReparacion" value="Ingresado" checked> Ingresado</label>
+        <label><input type="radio" name="estadoReparacion" value="Entregado"> Entregado</label>
+      </div>
+
+      <button type="submit">Guardar</button>
+    </form>
+
+    <hr>
+
+    <h2>Búsqueda de Cliente</h2>
+    <input type="text" id="busqueda" placeholder="Buscar por DNI..." />
+    <button onclick="toggleReparaciones()">Ver/Ocultar Reparaciones Guardadas</button>
+
+    <div id="lista-reparaciones" class="oculto"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYPxGjUU2X2APsRcMMhDbwTOASL72wx-0",
+      authDomain: "reparacion-celulares.firebaseapp.com",
+      projectId: "reparacion-celulares",
+      storageBucket: "reparacion-celulares.appspot.com",
+      messagingSenderId: "858487731820",
+      appId: "1:858487731820:web:e6e4d4d78ae0c7c5928a49"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let idParaEditar = null;
+    const form = document.getElementById('form-reparacion');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const datos = {
+        cliente: {
+          nombre: document.getElementById('nombre').value,
+          dni: document.getElementById('dni').value,
+          telefono: document.getElementById('telefono').value
+        },
+        dispositivo: {
+          tipo: document.getElementById('tipo').value,
+          marca: document.getElementById('marca').value,
+          modelo: document.getElementById('modelo').value,
+          serial: document.getElementById('serial').value,
+          tipoReparacion: document.getElementById('tipoReparacion').value,
+          falla: document.getElementById('falla').value,
+          estadoGeneral: document.getElementById('estadoGeneral').value,
+          accesorios: document.getElementById('accesorios').value,
+          estado: document.querySelector('input[name="estadoReparacion"]:checked').value,
+          costo: parseFloat(document.getElementById('costo').value)
+        },
+        fecha: new Date()
+      };
+
+      try {
+        if (idParaEditar) {
+          await db.collection('reparaciones').doc(idParaEditar).update(datos);
+          alert('Reparación actualizada ✅');
+          idParaEditar = null;
+        } else {
+          await db.collection('reparaciones').add(datos);
+          alert('Reparación guardada ✅');
+        }
+
+        form.reset();
+      } catch (error) {
+        console.error("Error: ", error);
+        alert('Error al guardar ❌');
+      }
+    });
+
+    function renderReparaciones(snapshot) {
+      const lista = document.getElementById("lista-reparaciones");
+      const dniBuscar = document.getElementById("busqueda").value.toLowerCase();
+      lista.innerHTML = "";
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        const dni = data.cliente.dni.toLowerCase();
+
+        if (!dniBuscar || dni.includes(dniBuscar)) {
+          const item = document.createElement("div");
+          item.classList.add("tarjeta");
+
+          item.innerHTML = `
+            <strong>Cliente:</strong> ${data.cliente.nombre} (${data.cliente.telefono})<br>
+            <strong>DNI:</strong> ${data.cliente.dni}<br>
+            <strong>Equipo:</strong> ${data.dispositivo.tipo}, ${data.dispositivo.marca} ${data.dispositivo.modelo}<br>
+            <strong>Serial:</strong> ${data.dispositivo.serial}<br>
+            <strong>Tipo de reparación:</strong> ${data.dispositivo.tipoReparacion}<br>
+            <strong>Falla:</strong> ${data.dispositivo.falla}<br>
+            <strong>Estado general:</strong> ${data.dispositivo.estadoGeneral}<br>
+            <strong>Accesorios:</strong> ${data.dispositivo.accesorios}<br>
+            <strong>Estado:</strong> ${data.dispositivo.estado}<br>
+            <strong>Costo:</strong> $${data.dispositivo.costo?.toFixed(2) || "0.00"}<br>
+            <strong>Fecha:</strong> ${new Date(data.fecha.toDate()).toLocaleString()}<br><br>
+            <button onclick="editarReparacion('${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})">Editar</button>
+            <button onclick="eliminarReparacion('${id}')">Eliminar</button>
+            <button onclick="descargarPDF(${JSON.stringify(data).replace(/"/g, '&quot;')})">PDF</button>
+            <button onclick="enviarWhatsApp(${JSON.stringify(data).replace(/"/g, '&quot;')})">WhatsApp</button>
+          `;
+          lista.appendChild(item);
+        }
+      });
+    }
+
+    db.collection("reparaciones").onSnapshot(renderReparaciones);
+    document.getElementById("busqueda").addEventListener("input", () => {
+      db.collection("reparaciones").onSnapshot(renderReparaciones);
+    });
+
+    function eliminarReparacion(id) {
+      if (confirm("¿Estás seguro de eliminar esta reparación?")) {
+        db.collection("reparaciones").doc(id).delete()
+          .then(() => alert("Reparación eliminada ✅"))
+          .catch((error) => alert("No se pudo eliminar ❌"));
+      }
+    }
+
+    function editarReparacion(id, data) {
+      document.getElementById('nombre').value = data.cliente.nombre;
+      document.getElementById('dni').value = data.cliente.dni;
+      document.getElementById('telefono').value = data.cliente.telefono;
+
+      document.getElementById('tipo').value = data.dispositivo.tipo;
+      document.getElementById('marca').value = data.dispositivo.marca;
+      document.getElementById('modelo').value = data.dispositivo.modelo;
+      document.getElementById('serial').value = data.dispositivo.serial;
+      document.getElementById('tipoReparacion').value = data.dispositivo.tipoReparacion;
+      document.getElementById('falla').value = data.dispositivo.falla;
+      document.getElementById('estadoGeneral').value = data.dispositivo.estadoGeneral;
+      document.getElementById('accesorios').value = data.dispositivo.accesorios;
+      document.getElementById('costo').value = data.dispositivo.costo;
+
+      const estadoRadios = document.querySelectorAll('input[name="estadoReparacion"]');
+      estadoRadios.forEach(radio => {
+        radio.checked = (radio.value === data.dispositivo.estado);
+      });
+
+      idParaEditar = id;
+      alert("Editando reparación. Guarda los cambios para actualizar.");
+    }
+
+    function toggleReparaciones() {
+      document.getElementById("lista-reparaciones").classList.toggle("oculto");
+    }
+
+    async function getImageBase64(url) {
+      try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        return await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      } catch (error) {
+        console.error("Error cargando imagen:", error);
+        return null;
+      }
+    }
+
+    async function descargarPDF(data) {
+      const doc = new jsPDF();
+      const logo = await getImageBase64("/public/logo.jpeg");
+
+      if (logo) {
+        doc.addImage(logo, "JPEG", 15, 10, 30, 30);
+      }
+
+      doc.setFontSize(16);
+      doc.text("FrankServices - Ficha de Reparación", 50, 20);
+      doc.setFontSize(12);
+      let y = 50;
+      const salto = 8;
+
+      doc.text(`Cliente: ${data.cliente.nombre}`, 20, y); y += salto;
+      doc.text(`DNI: ${data.cliente.dni}`, 20, y); y += salto;
+      doc.text(`Teléfono: ${data.cliente.telefono}`, 20, y); y += salto;
+      doc.text(`Equipo: ${data.dispositivo.tipo} - ${data.dispositivo.marca} ${data.dispositivo.modelo}`, 20, y); y += salto;
+      doc.text(`Serial: ${data.dispositivo.serial}`, 20, y); y += salto;
+      doc.text(`Tipo de Reparación: ${data.dispositivo.tipoReparacion}`, 20, y); y += salto;
+      doc.text(`Falla Reportada: ${data.dispositivo.falla}`, 20, y); y += salto;
+      doc.text(`Estado General: ${data.dispositivo.estadoGeneral}`, 20, y); y += salto;
+      doc.text(`Accesorios: ${data.dispositivo.accesorios}`, 20, y); y += salto;
+      doc.text(`Estado: ${data.dispositivo.estado}`, 20, y); y += salto;
+      doc.text(`Costo: $${data.dispositivo.costo.toFixed(2)}`, 20, y); y += salto;
+      function parseFecha(fecha) {
+        if (!fecha) return new Date();
+        if (typeof fecha.toDate === 'function') return fecha.toDate();
+        if (typeof fecha === 'string') return new Date(Date.parse(fecha));
+        return new Date(fecha);
+      }
+
+      const fecha = parseFecha(data.fecha);
+
+      doc.text(`Fecha: ${fecha.toLocaleString()}`, 20, y);
+
+      doc.save(`Ficha-${data.cliente.nombre}-${data.cliente.dni}.pdf`);
+    }
+
+    function enviarWhatsApp(data) {
+      const numeroDestino = prompt("¿A qué número quieres enviar el WhatsApp? (ej: 1123456789)");
+      if (!numeroDestino) return;
+
+      function parseFecha(fecha) {
+        if (!fecha) return new Date();
+        if (typeof fecha.toDate === 'function') return fecha.toDate();
+        if (typeof fecha === 'string') return new Date(Date.parse(fecha));
+        return new Date(fecha);
+      }
+
+      const fecha = parseFecha(data.fecha);
+
+      const mensaje = `
+Hola ${data.cliente.nombre}, esta es la información de tu reparación en FrankServices:
+
+📱 Equipo: ${data.dispositivo.tipo} - ${data.dispositivo.marca} ${data.dispositivo.modelo}
+🔧 Reparación: ${data.dispositivo.tipoReparacion}
+💬 Falla: ${data.dispositivo.falla}
+💰 Costo: $${data.dispositivo.costo.toFixed(2)}
+📦 Accesorios: ${data.dispositivo.accesorios}
+📅 Estado: ${data.dispositivo.estado}
+🗓 Fecha: ${fecha.toLocaleDateString()}
+  `;
+
+      const telefono = numeroDestino.replace(/\D/g, '');
+      const url = `https://wa.me/549${telefono}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }
+
+    function parseFecha(fecha) {
+      if (!fecha) return new Date();
+      if (typeof fecha.toDate === 'function') return fecha.toDate();
+      if (typeof fecha === 'string') return new Date(Date.parse(fecha));
+      return new Date(fecha);
+    }
+  </script>
+</body>
+
+</html>
