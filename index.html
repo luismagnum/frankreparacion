@@ -7,7 +7,6 @@
   <link rel="icon" href="logo.ico" />
   <title>FrankServices</title>
 
-  <!-- jsPDF para PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     window.jsPDF = window.jspdf.jsPDF;
@@ -133,6 +132,7 @@
       display: none;
     }
 
+
     @media (max-width: 768px) {
       .container {
         padding: 15px;
@@ -202,12 +202,10 @@
 
     <div id="lista-reparaciones" class="oculto"></div>
   </div>
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
-    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDYPxGjUU2X2APsRcMMhDbwTOASL72wx-0",
       authDomain: "reparacion-celulares.firebaseapp.com",
