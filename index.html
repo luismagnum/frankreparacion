@@ -403,20 +403,21 @@
       const fecha = parseFecha(data.fecha);
 
       const mensaje = `
-*FrankServices - Detalles de Reparación*
+*FRANK SERVICES - DETALLES DE REPARACIÓN*
 
-👤 *Cliente:* ${data.cliente.nombre}
+✅ *Cliente:* ${data.cliente.nombre}
 🆔 *DNI:* ${data.cliente.dni}
-📞 *Teléfono:* ${data.cliente.telefono}
+📲 *Teléfono:* ${data.cliente.telefono}
 
 📱 *Equipo:* ${data.dispositivo.tipo} - ${data.dispositivo.marca} ${data.dispositivo.modelo}
-🔧 *Reparación:* ${data.dispositivo.tipoReparacion}
-💬 *Falla:* ${data.dispositivo.falla}
-📦 *Accesorios:* ${data.dispositivo.accesorios}
-📌 *Estado:* ${data.dispositivo.estado}
-💰 *Costo:* $${data.dispositivo.costo.toFixed(2)}
-🕓 *Fecha:* ${fecha.toLocaleDateString()}
-      `;
+🛠 *Reparación:* ${data.dispositivo.tipoReparacion}
+⚠ *Falla:* ${data.dispositivo.falla}
+🎒 *Accesorios:* ${data.dispositivo.accesorios}
+🔄 *Estado:* ${data.dispositivo.estado}
+💵 *Costo:* $${data.dispositivo.costo.toFixed(2)}
+📅 *Fecha:* ${fecha.toLocaleDateString('es-AR')}
+
+_¡Gracias por confiar en nosotros!_`;
 
       const telefono = numeroDestino.replace(/\D/g, '');
       const url = `https://wa.me/549${telefono}?text=${encodeURIComponent(mensaje)}`;
