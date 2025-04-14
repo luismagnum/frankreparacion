@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="logo.ico">
+  <link rel="icon" href="logo.ico" />
   <title>FrankServices</title>
 
+  <!-- jsPDF para PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     window.jsPDF = window.jspdf.jsPDF;
@@ -41,6 +42,8 @@
       align-items: center;
       gap: 15px;
       justify-content: center;
+      flex-wrap: wrap;
+      text-align: center;
     }
 
     .logo {
@@ -56,7 +59,7 @@
     }
 
     form {
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
     input[type="text"],
@@ -180,7 +183,7 @@
       <input type="text" id="falla" placeholder="Falla reportada" />
       <input type="text" id="estadoGeneral" placeholder="Estado general del equipo" />
       <input type="text" id="accesorios" placeholder="Accesorios entregados" />
-      <input type="number" id="costo" placeholder="Costo de reparación ($)" step="0.01" />
+      <input type="number" id="costo" placeholder="Costo Aproximado ($)" step="0.01" />
 
       <label>Estado de la reparación</label>
       <div class="checkbox-group">
@@ -199,11 +202,12 @@
 
     <div id="lista-reparaciones" class="oculto"></div>
   </div>
-
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
+    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDYPxGjUU2X2APsRcMMhDbwTOASL72wx-0",
       authDomain: "reparacion-celulares.firebaseapp.com",
@@ -271,6 +275,7 @@
         const dni = data.cliente.dni.toLowerCase();
 
         if (!dniBuscar || dni.includes(dniBuscar)) {
+          const fecha = parseFecha(data.fecha);
           const item = document.createElement("div");
           item.classList.add("tarjeta");
 
@@ -285,7 +290,7 @@
             <strong>Accesorios:</strong> ${data.dispositivo.accesorios}<br>
             <strong>Estado:</strong> ${data.dispositivo.estado}<br>
             <strong>Costo:</strong> $${data.dispositivo.costo?.toFixed(2) || "0.00"}<br>
-            <strong>Fecha:</strong> ${new Date(data.fecha.toDate()).toLocaleString()}<br><br>
+            <strong>Fecha:</strong> ${fecha.toLocaleString()}<br><br>
             <button onclick="editarReparacion('${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})">Editar</button>
             <button onclick="eliminarReparacion('${id}')">Eliminar</button>
             <button onclick="descargarPDF(${JSON.stringify(data).replace(/"/g, '&quot;')})">PDF</button>
@@ -336,7 +341,6 @@
     function toggleReparaciones() {
       document.getElementById("lista-reparaciones").classList.toggle("oculto");
     }
-
     async function getImageBase64(url) {
       try {
         const res = await fetch(url);
@@ -361,11 +365,20 @@
         doc.addImage(logo, "JPEG", 15, 10, 30, 30);
       }
 
-      doc.setFontSize(16);
+      doc.setFontSize(18);
       doc.text("FrankServices - Ficha de Reparación", 50, 20);
-      doc.setFontSize(12);
+      doc.setFontSize(14);
       let y = 50;
-      const salto = 8;
+      const salto = 9;
+
+      const fecha = parseFecha(data.fecha);
+      const fechaFormateada = fecha.toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
 
       doc.text(`Cliente: ${data.cliente.nombre}`, 20, y); y += salto;
       doc.text(`DNI: ${data.cliente.dni}`, 20, y); y += salto;
@@ -378,16 +391,7 @@
       doc.text(`Accesorios: ${data.dispositivo.accesorios}`, 20, y); y += salto;
       doc.text(`Estado: ${data.dispositivo.estado}`, 20, y); y += salto;
       doc.text(`Costo: $${data.dispositivo.costo.toFixed(2)}`, 20, y); y += salto;
-      function parseFecha(fecha) {
-        if (!fecha) return new Date();
-        if (typeof fecha.toDate === 'function') return fecha.toDate();
-        if (typeof fecha === 'string') return new Date(Date.parse(fecha));
-        return new Date(fecha);
-      }
-
-      const fecha = parseFecha(data.fecha);
-
-      doc.text(`Fecha: ${fecha.toLocaleString()}`, 20, y);
+      doc.text(`Fecha: ${fechaFormateada}`, 20, y);
 
       doc.save(`Ficha-${data.cliente.nombre}-${data.cliente.dni}.pdf`);
     }
@@ -396,26 +400,23 @@
       const numeroDestino = prompt("¿A qué número quieres enviar el WhatsApp? (ej: 1123456789)");
       if (!numeroDestino) return;
 
-      function parseFecha(fecha) {
-        if (!fecha) return new Date();
-        if (typeof fecha.toDate === 'function') return fecha.toDate();
-        if (typeof fecha === 'string') return new Date(Date.parse(fecha));
-        return new Date(fecha);
-      }
-
       const fecha = parseFecha(data.fecha);
 
       const mensaje = `
-Hola ${data.cliente.nombre}, esta es la información de tu reparación en FrankServices:
+*FrankServices - Detalles de Reparación*
 
-📱 Equipo: ${data.dispositivo.tipo} - ${data.dispositivo.marca} ${data.dispositivo.modelo}
-🔧 Reparación: ${data.dispositivo.tipoReparacion}
-💬 Falla: ${data.dispositivo.falla}
-💰 Costo: $${data.dispositivo.costo.toFixed(2)}
-📦 Accesorios: ${data.dispositivo.accesorios}
-📅 Estado: ${data.dispositivo.estado}
-🗓 Fecha: ${fecha.toLocaleDateString()}
-  `;
+👤 *Cliente:* ${data.cliente.nombre}
+🆔 *DNI:* ${data.cliente.dni}
+📞 *Teléfono:* ${data.cliente.telefono}
+
+📱 *Equipo:* ${data.dispositivo.tipo} - ${data.dispositivo.marca} ${data.dispositivo.modelo}
+🔧 *Reparación:* ${data.dispositivo.tipoReparacion}
+💬 *Falla:* ${data.dispositivo.falla}
+📦 *Accesorios:* ${data.dispositivo.accesorios}
+📌 *Estado:* ${data.dispositivo.estado}
+💰 *Costo:* $${data.dispositivo.costo.toFixed(2)}
+🕓 *Fecha:* ${fecha.toLocaleDateString()}
+      `;
 
       const telefono = numeroDestino.replace(/\D/g, '');
       const url = `https://wa.me/549${telefono}?text=${encodeURIComponent(mensaje)}`;
@@ -423,10 +424,19 @@ Hola ${data.cliente.nombre}, esta es la información de tu reparación en FrankS
     }
 
     function parseFecha(fecha) {
-      if (!fecha) return new Date();
-      if (typeof fecha.toDate === 'function') return fecha.toDate();
-      if (typeof fecha === 'string') return new Date(Date.parse(fecha));
-      return new Date(fecha);
+      if (fecha && typeof fecha.toDate === 'function') {
+        return fecha.toDate();
+      }
+      if (fecha instanceof Date) {
+        return fecha;
+      }
+      if (typeof fecha === 'string') {
+        return new Date(fecha);
+      }
+      if (typeof fecha === 'number') {
+        return new Date(fecha);
+      }
+      return new Date();
     }
   </script>
 </body>
