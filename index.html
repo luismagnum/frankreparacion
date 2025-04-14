@@ -405,14 +405,18 @@
       const mensaje = `
 *FRANK SERVICES - DETALLES DE REPARACIÓN*
 
-[+] *Cliente:* ${data.cliente.nombre}
-[#] *DNI:* ${data.cliente.dni}
-[+] *Tel:* ${data.cliente.telefono}
+✅ *Cliente:* ${data.cliente.nombre}
+🆔 *DNI:* ${data.cliente.dni}
+📲 *Teléfono:* ${data.cliente.telefono}
 
-[?] *Equipo:* ${data.dispositivo.marca} ${data.dispositivo.modelo}
-[!] *Falla:* ${data.dispositivo.falla}
-[$] *Costo:* $${data.dispositivo.costo.toFixed(2)}
-[✓] *Estado:* ${data.dispositivo.estado}
+📱 *Equipo:* ${data.dispositivo.tipo} - ${data.dispositivo.marca} ${data.dispositivo.modelo}
+🛠 *Reparación:* ${data.dispositivo.tipoReparacion}
+⚠ *Falla:* ${data.dispositivo.falla}
+🎒 *Accesorios:* ${data.dispositivo.accesorios}
+🔄 *Estado:* ${data.dispositivo.estado}
+💵 *Costo:* $${data.dispositivo.costo.toFixed(2)}
+📅 *Fecha:* ${fecha.toLocaleDateString('es-AR')}
+
 _¡Gracias por confiar en nosotros!_`;
 
       const telefono = numeroDestino.replace(/\D/g, '');
