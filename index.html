@@ -7,6 +7,7 @@
   <link rel="icon" href="logo.ico" />
   <title>FrankServices</title>
 
+  <!-- jsPDF para PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     window.jsPDF = window.jspdf.jsPDF;
@@ -84,7 +85,6 @@
     button {
       background-color: #28a745;
       color: white;
-      margin: auto;
       padding: 10px 16px;
       border: none;
       border-radius: 4px;
@@ -132,6 +132,24 @@
       display: none;
     }
 
+    .estadisticas {
+      background-color: #f1f5f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 16px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .estadisticas h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .estadisticas p {
+      margin: 8px 0;
+      color: #444;
+    }
 
     @media (max-width: 768px) {
       .container {
@@ -157,6 +175,7 @@
       .checkbox-group {
         flex-direction: column;
       }
+
     }
   </style>
 </head>
@@ -192,6 +211,13 @@
       </div>
 
       <button type="submit">Guardar</button>
+      <div class="estadisticas">
+        <h2>📊 Estadísticas</h2>
+        <p>Total de reparaciones: <span id="total-reparaciones">0</span></p>
+        <p>Total facturado: $<span id="total-facturado">0.00</span></p>
+        <p>Entregadas: <span id="entregadas">0</span></p>
+        <p>Pendientes: <span id="pendientes">0</span></p>
+      </div>
     </form>
 
     <hr>
@@ -299,7 +325,11 @@
       });
     }
 
-    db.collection("reparaciones").onSnapshot(renderReparaciones);
+    db.collection("reparaciones").onSnapshot((snapshot) => {
+      renderReparaciones(snapshot);
+      cargarEstadisticas();
+    });
+
     document.getElementById("busqueda").addEventListener("input", () => {
       db.collection("reparaciones").onSnapshot(renderReparaciones);
     });
@@ -339,6 +369,33 @@
     function toggleReparaciones() {
       document.getElementById("lista-reparaciones").classList.toggle("oculto");
     }
+
+    function cargarEstadisticas() {
+      db.collection("reparaciones").get().then((snapshot) => {
+        let total = 0;
+        let totalFacturado = 0;
+        let entregadas = 0;
+        let pendientes = 0;
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          total++;
+          totalFacturado += data.dispositivo.costo || 0;
+
+          if (data.dispositivo.estado === "Entregado") {
+            entregadas++;
+          } else {
+            pendientes++;
+          }
+        });
+
+        document.getElementById("total-reparaciones").textContent = total;
+        document.getElementById("total-facturado").textContent = totalFacturado.toFixed(2);
+        document.getElementById("entregadas").textContent = entregadas;
+        document.getElementById("pendientes").textContent = pendientes;
+      });
+    }
+
     async function getImageBase64(url) {
       try {
         const res = await fetch(url);
@@ -365,6 +422,11 @@
 
       doc.setFontSize(18);
       doc.text("FrankServices - Ficha de Reparación", 50, 20);
+
+      // Subtítulo
+      doc.setFontSize(12);
+      doc.text("Frank Pérez · Tlf: 2984230332 · Villa Regina. Argentina", 50, 28);
+
       doc.setFontSize(14);
       let y = 50;
       const salto = 9;
@@ -389,7 +451,15 @@
       doc.text(`Accesorios: ${data.dispositivo.accesorios}`, 20, y); y += salto;
       doc.text(`Estado: ${data.dispositivo.estado}`, 20, y); y += salto;
       doc.text(`Costo: $${data.dispositivo.costo.toFixed(2)}`, 20, y); y += salto;
-      doc.text(`Fecha: ${fechaFormateada}`, 20, y);
+      doc.text(`Fecha: ${fechaFormateada}`, 20, y); y += salto + 5;
+
+      doc.setFontSize(11);
+      const nota = "Nota: El cliente queda debidamente informado que el presupuesto dado es por la falla reportada y por el tipo de reparación al momento de recibir el dispositivo a reparar. Cualquier otro desperfecto encontrado en el dispositivo por el técnico, será informado al cliente para la aprobación de la reparación o cambio, indicando el valor adicional si fuera el caso.";
+      const notaPartes = doc.splitTextToSize(nota, 170);
+      doc.text(notaPartes, 20, y); y += notaPartes.length * 6 + 15;
+
+      doc.setFontSize(13);
+      doc.text("Firma del Cliente: _______________________________", 20, y);
 
       doc.save(`Ficha-${data.cliente.nombre}-${data.cliente.dni}.pdf`);
     }
@@ -437,6 +507,7 @@ _¡Gracias por confiar en nosotros!_`;
       }
       return new Date();
     }
+
   </script>
 </body>
 
