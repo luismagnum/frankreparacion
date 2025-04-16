@@ -5,7 +5,7 @@
   body {
     font-family: "Poppins", sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 20px 5px;
     background-color: #1e293b;
   }
 
@@ -24,25 +24,90 @@
   .header {
     display: flex;
     align-items: center;
-    gap: 15px;
     justify-content: center;
+    gap: 20px;
     flex-wrap: wrap;
-    text-align: center;
+    text-align: left;
+    margin-bottom: 20px;
   }
-
+  
   .logo {
-    height: 60px;
-    width: 60px;
+    height: 70px;
+    width: 70px;
     border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .titulo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .titulo h1 {
+    font-size: 28px;
+    color: #1e293b;
+    margin: 0;
+  }
+  
+  .subtitulo {
+    font-size: 18px;
+    color: #333d5bc3;
+    margin-top: 4px;
   }
 
-  h1,
+  /*h1,
   h2 {
     text-align: center;
     color: #333;
-  }
+  }*/
 
-  form {
+  .formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #f8fafc;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  }
+  
+  .formulario h3 {
+    font-size: 20px;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .form-grupo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-grupo label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+  
+  .form-grupo input {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+  }
+  
+  .form-grupo input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  }
+  
+
+  /*form {
     margin-top: 10px;
   }
 
@@ -58,7 +123,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-  }
+  }*/
 
   label {
     font-weight: bold;
@@ -78,6 +143,30 @@
   }
 
   button:hover {
+    background-color: #218838;
+  }
+
+  .boton-centrado {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  #btn-guardar {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: auto;
+    min-width: 150px;
+    max-width: 200px;
+  }
+  
+  #btn-guardar:hover {
     background-color: #218838;
   }
 
@@ -106,10 +195,55 @@
     background-color: #c82333;
   }
 
-  .checkbox-group {
+  /*.checkbox-group {
     display: flex;
     gap: 10px;
     margin-top: 8px;
+  }*/
+
+  .estado-container {
+    margin-top: 20px;
+  }
+  
+  .estado-container label {
+    font-weight: bold;
+    color: #1f2937;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .radio-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f1f5f9;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    border: 1px solid transparent;
+  }
+  
+  .radio-card:hover {
+    background-color: #e2e8f0;
+  }
+  
+  .radio-card input[type="radio"] {
+    accent-color: #16a34a;
+    transform: scale(1.2);
+  }
+  
+  .radio-card .icono {
+    color: #2563eb;
+    font-size: 18px;
   }
 
   .oculto {
@@ -248,6 +382,29 @@
     display: none;
   }
 
+  #btn-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px; /* Aumentamos un poco el margen derecho */
+    z-index: 999;
+    background-color: #1d4ed8;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  #btn-top:hover {
+    background-color: #2563eb;
+    transform: scale(1.1);
+  }
+  
+
 
   @media (max-width: 768px) {
     .container {
@@ -256,19 +413,30 @@
 
     .header {
       flex-direction: column;
-      align-items: center;
       text-align: center;
+    }
+  
+    .titulo h1 {
+      font-size: 24px;
+    }
+  
+    .subtitulo {
+      font-size: 15px;
+    }
+
+    .formulario {
+      padding: 20px;
     }
 
     .tarjeta {
       font-size: 15px;
     }
 
-    form input,
+    /*form input,
     form textarea,
     form select {
       font-size: 16px;
-    }
+    }*/
 
     .checkbox-group {
       flex-direction: column;
@@ -283,4 +451,17 @@
       width: 100%;
     }
 
+    #btn-top {
+      right: 50px; /* en pantallas grandes, lo metemos más */
+      bottom: 40px 40px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    #btn-top {
+      right: 20px;
+      bottom: 20px;
+      font-size: 18px;
+      padding: 10px 14px;
+    }
   }

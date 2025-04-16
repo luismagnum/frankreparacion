@@ -25,33 +25,100 @@
   <div class="container">
     <div class="header">
       <img src="logo.jpeg" alt="Logo" class="logo" />
-      <h1>FrankServices</h1>
+      <div class="titulo">
+        <h1>FrankServices</h1>
+        <p class="subtitulo">📋 Formulario de ingreso de reparaciones</p>
+      </div>
     </div>
 
-    <form id="form-reparacion">
-      <h3>Datos del Cliente</h3>
-      <input type="text" id="nombre" placeholder="Nombre del Cliente" required />
-      <input type="text" id="dni" placeholder="DNI" required />
-      <input type="tel" id="telefono" placeholder="Teléfono" required />
 
-      <h3>Datos del Dispositivo</h3>
-      <input type="text" id="tipo" placeholder="Tipo de equipo" required />
-      <input type="text" id="marca" placeholder="Marca del dispositivo" required />
-      <input type="text" id="modelo" placeholder="Modelo" required />
-      <input type="text" id="serial" placeholder="Serial" />
-      <input type="text" id="tipoReparacion" placeholder="Tipo de reparación" />
-      <input type="text" id="falla" placeholder="Falla reportada" />
-      <input type="text" id="estadoGeneral" placeholder="Estado general del equipo" />
-      <input type="text" id="accesorios" placeholder="Accesorios entregados" />
-      <input type="number" id="costo" placeholder="Costo Aproximado ($)" step="0.01" />
+    <form id="form-reparacion" class="formulario">
+      <h3><i class="fas fa-user"></i> Datos del Cliente</h3>
 
-      <label>Estado de la reparación</label>
-      <div class="checkbox-group">
-        <label><input type="radio" name="estadoReparacion" value="Ingresado" checked> Ingresado</label>
-        <label><input type="radio" name="estadoReparacion" value="Entregado"> Entregado</label>
+      <div class="form-grupo">
+        <label for="nombre">Nombre del Cliente</label>
+        <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required />
       </div>
 
-      <button type="submit">Guardar</button>
+      <div class="form-grupo">
+        <label for="dni">DNI</label>
+        <input type="text" id="dni" placeholder="Ej: 12345678" required />
+      </div>
+
+      <div class="form-grupo">
+        <label for="telefono">Teléfono</label>
+        <input type="tel" id="telefono" placeholder="Ej: 2984000000" required />
+      </div>
+
+      <h3><i class="fas fa-mobile-alt"></i> Datos del Dispositivo</h3>
+
+      <div class="form-grupo">
+        <label for="tipo">Tipo de equipo</label>
+        <input type="text" id="tipo" placeholder="Ej: Celular, Tablet" required />
+      </div>
+
+      <div class="form-grupo">
+        <label for="marca">Marca</label>
+        <input type="text" id="marca" placeholder="Ej: Samsung, Xiaomi" required />
+      </div>
+
+      <div class="form-grupo">
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" placeholder="Ej: A52, Redmi 9" required />
+      </div>
+
+      <div class="form-grupo">
+        <label for="serial">Serial</label>
+        <input type="text" id="serial" placeholder="Ej: SN123456789" />
+      </div>
+
+      <div class="form-grupo">
+        <label for="tipoReparacion">Tipo de reparación</label>
+        <input type="text" id="tipoReparacion" placeholder="Ej: Cambio de pantalla" />
+      </div>
+
+      <div class="form-grupo">
+        <label for="falla">Falla reportada</label>
+        <input type="text" id="falla" placeholder="Ej: No enciende" />
+      </div>
+
+      <div class="form-grupo">
+        <label for="estadoGeneral">Estado general</label>
+        <input type="text" id="estadoGeneral" placeholder="Ej: Golpeado en una esquina" />
+      </div>
+
+      <div class="form-grupo">
+        <label for="accesorios">Accesorios entregados</label>
+        <input type="text" id="accesorios" placeholder="Ej: Cargador, funda" />
+      </div>
+
+      <div class="form-grupo">
+        <label for="costo">Costo Aproximado ($)</label>
+        <input type="number" id="costo" step="0.01" placeholder="Ej: 3500" />
+      </div>
+
+      <div class="estado-container">
+        <label><i class="fas fa-tools"></i> Estado de la reparación</label>
+        <div class="checkbox-group">
+          <label class="radio-card">
+            <input type="radio" name="estadoReparacion" value="Ingresado" checked />
+            <i class="fas fa-sign-in-alt icono"></i>
+            Ingresado
+          </label>
+
+          <label class="radio-card">
+            <input type="radio" name="estadoReparacion" value="Entregado" />
+            <i class="fas fa-box"></i>
+            Entregado
+          </label>
+        </div>
+      </div>
+
+      <div class="boton-centrado">
+        <button type="submit" id="btn-guardar">Guardar</button>
+      </div>
+
+
       <div class="estadisticas">
         <h2><i class="fas fa-chart-bar"></i> Estadísticas</h2>
 
@@ -101,6 +168,10 @@
     </div>
     <div id="lista-reparaciones" class="oculto"></div>
   </div>
+
+  <button id="btn-top" title="Volver arriba">
+    <i class="fas fa-arrow-up"></i>
+  </button>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -399,7 +470,21 @@ _¡Gracias por confiar en nosotros!_`;
       return new Date();
     }
 
+    const btnTop = document.getElementById("btn-top");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        btnTop.style.display = "block";
+      } else {
+        btnTop.style.display = "none";
+      }
+    });
+
+    btnTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   </script>
+
 </body>
 
 </html>
