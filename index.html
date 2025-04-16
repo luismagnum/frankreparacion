@@ -5,179 +5,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="logo.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <title>FrankServices</title>
-
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
   <!-- jsPDF para PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     window.jsPDF = window.jspdf.jsPDF;
   </script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #1e293b;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      justify-content: center;
-      flex-wrap: wrap;
-      text-align: center;
-    }
-
-    .logo {
-      height: 60px;
-      width: 60px;
-      border-radius: 50%;
-    }
-
-    h1,
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-
-    form {
-      margin-top: 10px;
-    }
-
-    input[type="text"],
-    input[type="tel"],
-    input[type="number"],
-    textarea,
-    select,
-    #busqueda {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
-    }
-
-    button {
-      background-color: #28a745;
-      color: white;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #218838;
-    }
-
-    .tarjeta {
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 15px;
-      margin: 15px 0;
-      background-color: #fafafa;
-    }
-
-    .tarjeta button {
-      background-color: #007bff;
-      margin-right: 5px;
-    }
-
-    .tarjeta button:hover {
-      background-color: #0056b3;
-    }
-
-    .tarjeta button:last-child {
-      background-color: #dc3545;
-    }
-
-    .tarjeta button:last-child:hover {
-      background-color: #c82333;
-    }
-
-    .checkbox-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 8px;
-    }
-
-    .oculto {
-      display: none;
-    }
-
-    .estadisticas {
-      background-color: #f1f5f9;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 20px;
-      font-size: 16px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .estadisticas h2 {
-      margin-bottom: 15px;
-      color: #333;
-    }
-
-    .estadisticas p {
-      margin: 8px 0;
-      color: #444;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 15px;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-
-      .tarjeta {
-        font-size: 15px;
-      }
-
-      form input,
-      form textarea,
-      form select {
-        font-size: 16px;
-      }
-
-      .checkbox-group {
-        flex-direction: column;
-      }
-
-    }
-  </style>
 </head>
 
 <body>
@@ -212,22 +53,55 @@
 
       <button type="submit">Guardar</button>
       <div class="estadisticas">
-        <h2>📊 Estadísticas</h2>
-        <p>Total de reparaciones: <span id="total-reparaciones">0</span></p>
-        <p>Total facturado: $<span id="total-facturado">0.00</span></p>
-        <p>Entregadas: <span id="entregadas">0</span></p>
-        <p>Pendientes: <span id="pendientes">0</span></p>
+        <h2><i class="fas fa-chart-bar"></i> Estadísticas</h2>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fas fa-screwdriver-wrench icon"></i>
+            <p>Total reparaciones</p>
+            <span id="total-reparaciones">0</span>
+          </div>
+
+          <div class="stat-card">
+            <i class="fas fa-dollar-sign icon"></i>
+            <p>Total facturado</p>
+            <span id="total-facturado">$0.00</span>
+          </div>
+
+          <div class="stat-card">
+            <i class="fas fa-box-open icon"></i>
+            <p>Entregadas</p>
+            <span id="entregadas">0</span>
+          </div>
+
+          <div class="stat-card">
+            <i class="fas fa-clock icon"></i>
+            <p>Pendientes</p>
+            <span id="pendientes">0</span>
+          </div>
+        </div>
       </div>
+
     </form>
 
     <hr>
 
-    <h2>Búsqueda de Cliente</h2>
-    <input type="text" id="busqueda" placeholder="Buscar por DNI..." />
-    <button onclick="toggleReparaciones()">Ver/Ocultar Reparaciones Guardadas</button>
+    <div class="busqueda-container">
+      <h2><i class="fas fa-user-search"></i> Búsqueda de Cliente</h2>
 
+      <div class="busqueda-box">
+        <input type="text" id="busqueda" placeholder="Buscar por DNI..." />
+        <button onclick="toggleReparaciones()">
+          <i class="fas fa-eye"></i> Ver/Ocultar Reparaciones
+        </button>
+      </div>
+
+      <!-- ✅ MENSAJE VA AQUÍ -->
+      <div id="mensaje-error" class="mensaje-oculto">❌ Cliente no encontrado</div>
+    </div>
     <div id="lista-reparaciones" class="oculto"></div>
   </div>
+
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
@@ -289,6 +163,7 @@
     });
 
     function renderReparaciones(snapshot) {
+      let coincidencias = 0;
       const lista = document.getElementById("lista-reparaciones");
       const dniBuscar = document.getElementById("busqueda").value.toLowerCase();
       lista.innerHTML = "";
@@ -299,30 +174,46 @@
         const dni = data.cliente.dni.toLowerCase();
 
         if (!dniBuscar || dni.includes(dniBuscar)) {
+          coincidencias++;
           const fecha = parseFecha(data.fecha);
           const item = document.createElement("div");
           item.classList.add("tarjeta");
 
           item.innerHTML = `
-            <strong>Cliente:</strong> ${data.cliente.nombre} (${data.cliente.telefono})<br>
-            <strong>DNI:</strong> ${data.cliente.dni}<br>
-            <strong>Equipo:</strong> ${data.dispositivo.tipo}, ${data.dispositivo.marca} ${data.dispositivo.modelo}<br>
-            <strong>Serial:</strong> ${data.dispositivo.serial}<br>
-            <strong>Tipo de reparación:</strong> ${data.dispositivo.tipoReparacion}<br>
-            <strong>Falla:</strong> ${data.dispositivo.falla}<br>
-            <strong>Estado general:</strong> ${data.dispositivo.estadoGeneral}<br>
-            <strong>Accesorios:</strong> ${data.dispositivo.accesorios}<br>
-            <strong>Estado:</strong> ${data.dispositivo.estado}<br>
-            <strong>Costo:</strong> $${data.dispositivo.costo?.toFixed(2) || "0.00"}<br>
-            <strong>Fecha:</strong> ${fecha.toLocaleString()}<br><br>
-            <button onclick="editarReparacion('${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})">Editar</button>
-            <button onclick="eliminarReparacion('${id}')">Eliminar</button>
-            <button onclick="descargarPDF(${JSON.stringify(data).replace(/"/g, '&quot;')})">PDF</button>
-            <button onclick="enviarWhatsApp(${JSON.stringify(data).replace(/"/g, '&quot;')})">WhatsApp</button>
-          `;
+      <strong>Cliente:</strong> ${data.cliente.nombre} (${data.cliente.telefono})<br>
+      <strong>DNI:</strong> ${data.cliente.dni}<br>
+      <strong>Equipo:</strong> ${data.dispositivo.tipo}, ${data.dispositivo.marca} ${data.dispositivo.modelo}<br>
+      <strong>Serial:</strong> ${data.dispositivo.serial}<br>
+      <strong>Tipo de reparación:</strong> ${data.dispositivo.tipoReparacion}<br>
+      <strong>Falla:</strong> ${data.dispositivo.falla}<br>
+      <strong>Estado general:</strong> ${data.dispositivo.estadoGeneral}<br>
+      <strong>Accesorios:</strong> ${data.dispositivo.accesorios}<br>
+      <strong>Estado:</strong> ${data.dispositivo.estado}<br>
+      <strong>Costo:</strong> $${data.dispositivo.costo?.toFixed(2) || "0.00"}<br>
+      <strong>Fecha:</strong> ${fecha.toLocaleString()}<br><br>
+      <button onclick="editarReparacion('${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})">Editar</button>
+      <button onclick="eliminarReparacion('${id}')">Eliminar</button>
+      <button onclick="descargarPDF(${JSON.stringify(data).replace(/"/g, '&quot;')})">PDF</button>
+      <button onclick="enviarWhatsApp(${JSON.stringify(data).replace(/"/g, '&quot;')})">WhatsApp</button>
+    `;
           lista.appendChild(item);
         }
       });
+
+      const mensaje = document.getElementById("mensaje-error");
+
+      // Ocultar mensaje cada vez que hay nueva búsqueda
+      mensaje.style.display = "none";
+
+      // Mostrar si no hay coincidencias
+      if (dniBuscar && coincidencias === 0) {
+        mensaje.textContent = "❌ Cliente no encontrado";
+        mensaje.style.display = "block";
+
+        setTimeout(() => {
+          mensaje.style.display = "none";
+        }, 3000);
+      }
     }
 
     db.collection("reparaciones").onSnapshot((snapshot) => {
