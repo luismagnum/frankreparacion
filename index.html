@@ -97,6 +97,12 @@
         <input type="number" id="costo" step="0.01" placeholder="Ej: 3500" />
       </div>
 
+      <div class="solo-mobile" style="text-align: center; margin-top: 20px;">
+        <a href="firma.html" class="btn-firma">
+          <i class="fas fa-signature"></i> Firmar digitalmente
+        </a>
+      </div>
+
       <div class="estado-container">
         <label><i class="fas fa-tools"></i> Estado de la reparación</label>
         <div class="checkbox-group">
@@ -385,7 +391,6 @@
       doc.setFontSize(18);
       doc.text("FrankServices - Ficha de Reparación", 50, 20);
 
-      // Subtítulo
       doc.setFontSize(12);
       doc.text("Frank Pérez · Tlf: 2984230332 · Villa Regina. Argentina", 50, 28);
 
@@ -421,11 +426,19 @@
       doc.text(notaPartes, 20, y); y += notaPartes.length * 6 + 15;
 
       doc.setFontSize(13);
-      doc.text("Firma del Cliente: _______________________________", 20, y);
+      doc.text("Firma del Cliente:", 20, y); y += salto;
+
+      const firma = localStorage.getItem("firmaCliente");
+      if (firma) {
+        doc.addImage(firma, 'PNG', 20, y, 60, 30);
+        y += 35;
+      } else {
+        doc.text("_________________________", 20, y);
+        y += 10;
+      }
 
       doc.save(`Ficha-${data.cliente.nombre}-${data.cliente.dni}.pdf`);
     }
-
     function enviarWhatsApp(data) {
       const numeroDestino = prompt("¿A qué número quieres enviar el WhatsApp? (ej: 1123456789)");
       if (!numeroDestino) return;

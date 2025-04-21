@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firmar</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            height: 100vh;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background: white;
+            touch-action: none;
+        }
+
+        .botones {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .guardar {
+            background-color: #198754;
+            color: white;
+        }
+
+        .borrar {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .volver {
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Firma del Cliente</h2>
+    <canvas id="canvas" width="300" height="150"></canvas>
+
+    <div class="botones">
+        <button class="guardar" onclick="guardarFirma()">Guardar Firma</button>
+        <button class="borrar" onclick="limpiarCanvas()">Borrar</button>
+        <a href="index.html" class="volver">Volver</a>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let dibujando = false;
+
+        canvas.addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            dibujando = true;
+        });
+
+        canvas.addEventListener("touchmove", (e) => {
+            if (!dibujando) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.stroke();
+        });
+
+        canvas.addEventListener("touchend", () => {
+            dibujando = false;
+        });
+
+        function limpiarCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function guardarFirma() {
+            const imagenFirma = canvas.toDataURL("image/png");
+            localStorage.setItem("firmaCliente", imagenFirma);
+            alert("✅ Firma guardada correctamente");
+        }
+    </script>
+</body>
+
+</html>
