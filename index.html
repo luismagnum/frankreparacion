@@ -93,6 +93,12 @@
       </div>
 
       <div class="form-grupo">
+        <label for="contrasena">Contraseña del dispositivo</label>
+        <input type="text" id="contrasena" placeholder="Ej: 1234, patrón, etc." />
+      </div>
+
+
+      <div class="form-grupo">
         <label for="costo">Costo Aproximado ($)</label>
         <input type="number" id="costo" step="0.01" placeholder="Ej: 3500" />
       </div>
@@ -154,7 +160,6 @@
           </div>
         </div>
       </div>
-
     </form>
 
     <hr>
@@ -216,6 +221,7 @@
           falla: document.getElementById('falla').value,
           estadoGeneral: document.getElementById('estadoGeneral').value,
           accesorios: document.getElementById('accesorios').value,
+          contrasena: document.getElementById('contrasena').value,
           estado: document.querySelector('input[name="estadoReparacion"]:checked').value,
           costo: parseFloat(document.getElementById('costo').value)
         },
@@ -265,6 +271,7 @@
       <strong>Falla:</strong> ${data.dispositivo.falla}<br>
       <strong>Estado general:</strong> ${data.dispositivo.estadoGeneral}<br>
       <strong>Accesorios:</strong> ${data.dispositivo.accesorios}<br>
+      <strong>Contraseña:</strong> ${data.dispositivo.contrasena ? data.dispositivo.contrasena : 'Sin contraseña'}<br>
       <strong>Estado:</strong> ${data.dispositivo.estado}<br>
       <strong>Costo:</strong> $${data.dispositivo.costo?.toFixed(2) || "0.00"}<br>
       <strong>Fecha:</strong> ${fecha.toLocaleString()}<br><br>
@@ -279,10 +286,8 @@
 
       const mensaje = document.getElementById("mensaje-error");
 
-      // Ocultar mensaje cada vez que hay nueva búsqueda
       mensaje.style.display = "none";
 
-      // Mostrar si no hay coincidencias
       if (dniBuscar && coincidencias === 0) {
         mensaje.textContent = "❌ Cliente no encontrado";
         mensaje.style.display = "block";
@@ -314,7 +319,6 @@
       document.getElementById('nombre').value = data.cliente.nombre;
       document.getElementById('dni').value = data.cliente.dni;
       document.getElementById('telefono').value = data.cliente.telefono;
-
       document.getElementById('tipo').value = data.dispositivo.tipo;
       document.getElementById('marca').value = data.dispositivo.marca;
       document.getElementById('modelo').value = data.dispositivo.modelo;
@@ -323,6 +327,7 @@
       document.getElementById('falla').value = data.dispositivo.falla;
       document.getElementById('estadoGeneral').value = data.dispositivo.estadoGeneral;
       document.getElementById('accesorios').value = data.dispositivo.accesorios;
+      document.getElementById('contrasena').value = data.dispositivo.contrasena || '';
       document.getElementById('costo').value = data.dispositivo.costo;
 
       const estadoRadios = document.querySelectorAll('input[name="estadoReparacion"]');
@@ -416,6 +421,7 @@
       doc.text(`Falla Reportada: ${data.dispositivo.falla}`, 20, y); y += salto;
       doc.text(`Estado General: ${data.dispositivo.estadoGeneral}`, 20, y); y += salto;
       doc.text(`Accesorios: ${data.dispositivo.accesorios}`, 20, y); y += salto;
+      doc.text(`Contraseña: ${data.dispositivo.contrasena || "Sin contraseña"}`, 20, y); y += salto;
       doc.text(`Estado: ${data.dispositivo.estado}`, 20, y); y += salto;
       doc.text(`Costo: $${data.dispositivo.costo.toFixed(2)}`, 20, y); y += salto;
       doc.text(`Fecha: ${fechaFormateada}`, 20, y); y += salto + 5;
@@ -456,6 +462,7 @@
 🛠 *Reparación:* ${data.dispositivo.tipoReparacion}
 ⚠ *Falla:* ${data.dispositivo.falla}
 🎒 *Accesorios:* ${data.dispositivo.accesorios}
+🔒 *Contraseña:* ${data.dispositivo.contrasena || "Sin contraseña"}
 🔄 *Estado:* ${data.dispositivo.estado}
 💵 *Costo:* $${data.dispositivo.costo.toFixed(2)}
 📅 *Fecha:* ${fecha.toLocaleDateString('es-AR')}
@@ -496,6 +503,7 @@ _¡Gracias por confiar en nosotros!_`;
     btnTop.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+    
   </script>
 
 </body>
