@@ -416,10 +416,10 @@
 
     async function descargarPDF(data) {
       const doc = new jsPDF();
-      const logo = await getImageBase64("logo.jpeg");
+      const logo = await getImageBase64("logo.png");
 
       if (logo) {
-        doc.addImage(logo, "JPEG", 15, 10, 30, 30);
+        doc.addImage(logo, "PNG", 15, 10, 30, 30);
       }
 
       doc.setFontSize(18);
@@ -477,6 +477,7 @@
 
       doc.save(`Ficha-${data.cliente.nombre}-${data.cliente.dni}.pdf`);
     }
+
     function enviarWhatsApp(data) {
       const numeroDestino = prompt("¿A qué número quieres enviar el WhatsApp? (ej: 1123456789)");
       if (!numeroDestino) return;
