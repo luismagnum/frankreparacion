@@ -27,7 +27,7 @@
       <img src="logo.jpeg" alt="Logo" class="logo" />
       <div class="titulo">
         <h1>FrankServices</h1>
-        <p class="subtitulo">📋 Formulario de ingreso de reparaciones</p>
+        <p class="subtitulo">📋 Orden de Reparacion</p>
       </div>
     </div>
 
@@ -97,11 +97,37 @@
         <input type="text" id="contrasena" placeholder="Ej: 1234, patrón, etc." />
       </div>
 
-
       <div class="form-grupo">
         <label for="costo">Costo Aproximado ($)</label>
         <input type="number" id="costo" step="0.01" placeholder="Ej: 3500" />
       </div>
+
+      <div class="form-grupo">
+        <label for="observaciones">Observaciones</label>
+        <textarea id="observaciones" rows="3" placeholder="Ej: Cliente necesita el equipo para el lunes."></textarea>
+      </div>
+
+      <div class="patron-container solo-mobile">
+        <p>Indique el patrón de desbloqueo tocando los círculos:</p>
+        <div class="patron-grid" id="patronGrid">
+          <div class="patron-dot" data-num="1">1</div>
+          <div class="patron-dot" data-num="2">2</div>
+          <div class="patron-dot" data-num="3">3</div>
+          <div class="patron-dot" data-num="4">4</div>
+          <div class="patron-dot" data-num="5">5</div>
+          <div class="patron-dot" data-num="6">6</div>
+          <div class="patron-dot" data-num="7">7</div>
+          <div class="patron-dot" data-num="8">8</div>
+          <div class="patron-dot" data-num="9">9</div>
+        </div>
+        <div class="patron-output">
+          Patrón ingresado: <span id="patronSecuencia">-</span>
+        </div>
+        <button type="button" id="limpiarPatron" class="btn-limpiar">Limpiar patrón</button>
+
+
+      </div>
+
 
       <div class="solo-mobile" style="text-align: center; margin-top: 20px;">
         <a href="firma.html" class="btn-firma">
@@ -222,6 +248,7 @@
           estadoGeneral: document.getElementById('estadoGeneral').value,
           accesorios: document.getElementById('accesorios').value,
           contrasena: document.getElementById('contrasena').value,
+          observaciones: document.getElementById('observaciones').value,
           estado: document.querySelector('input[name="estadoReparacion"]:checked').value,
           costo: parseFloat(document.getElementById('costo').value)
         },
@@ -274,6 +301,7 @@
       <strong>Contraseña:</strong> ${data.dispositivo.contrasena ? data.dispositivo.contrasena : 'Sin contraseña'}<br>
       <strong>Estado:</strong> ${data.dispositivo.estado}<br>
       <strong>Costo:</strong> $${data.dispositivo.costo?.toFixed(2) || "0.00"}<br>
+      <strong>Observaciones:</strong> ${data.dispositivo.observaciones || "Sin observaciones"}<br>
       <strong>Fecha:</strong> ${fecha.toLocaleString()}<br><br>
       <button onclick="editarReparacion('${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})">Editar</button>
       <button onclick="eliminarReparacion('${id}')">Eliminar</button>
@@ -328,6 +356,7 @@
       document.getElementById('estadoGeneral').value = data.dispositivo.estadoGeneral;
       document.getElementById('accesorios').value = data.dispositivo.accesorios;
       document.getElementById('contrasena').value = data.dispositivo.contrasena || '';
+      document.getElementById('observaciones').value = data.dispositivo.observaciones || '';
       document.getElementById('costo').value = data.dispositivo.costo;
 
       const estadoRadios = document.querySelectorAll('input[name="estadoReparacion"]');
@@ -424,6 +453,7 @@
       doc.text(`Contraseña: ${data.dispositivo.contrasena || "Sin contraseña"}`, 20, y); y += salto;
       doc.text(`Estado: ${data.dispositivo.estado}`, 20, y); y += salto;
       doc.text(`Costo: $${data.dispositivo.costo.toFixed(2)}`, 20, y); y += salto;
+      doc.text(`Observaciones: ${data.dispositivo.observaciones || "Sin observaciones"}`, 20, y); y += salto;
       doc.text(`Fecha: ${fechaFormateada}`, 20, y); y += salto + 5;
 
       doc.setFontSize(11);
@@ -503,7 +533,33 @@ _¡Gracias por confiar en nosotros!_`;
     btnTop.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-    
+
+    const dots = document.querySelectorAll(".patron-dot");
+    const output = document.getElementById("patronSecuencia");
+    const btnLimpiar = document.getElementById("limpiarPatron");
+
+    let secuencia = [];
+
+    dots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        const num = dot.dataset.num;
+
+        // Evita repetir números
+        if (!secuencia.includes(num)) {
+          secuencia.push(num);
+          dot.classList.add("seleccionado");
+          output.textContent = secuencia.join("-");
+        }
+      });
+    });
+
+    btnLimpiar.addEventListener("click", (e) => {
+      e.preventDefault(); // ← Esto evita que el botón envíe el formulario
+      secuencia = [];
+      output.textContent = "-";
+      dots.forEach(dot => dot.classList.remove("seleccionado"));
+    });
+
   </script>
 
 </body>
