@@ -453,9 +453,11 @@
       doc.text(`Contraseña: ${data.dispositivo.contrasena || "Sin contraseña"}`, 20, y); y += salto;
       doc.text(`Estado: ${data.dispositivo.estado}`, 20, y); y += salto;
       doc.text(`Costo: $${data.dispositivo.costo.toFixed(2)}`, 20, y); y += salto;
-      doc.text(`Observaciones: ${data.dispositivo.observaciones || "Sin observaciones"}`, 20, y); y += salto;
+      const observaciones = `Observaciones: ${data.dispositivo.observaciones || "Sin observaciones"}`;
+      const textoObservaciones = doc.splitTextToSize(observaciones, 170); // 170 es el ancho de línea
+      doc.text(textoObservaciones, 20, y);
+      y += textoObservaciones.length * 6; // ajustá la altura según líneas ocupadas
       doc.text(`Fecha: ${fechaFormateada}`, 20, y); y += salto + 5;
-
       doc.setFontSize(11);
       const nota = "Nota: El cliente queda debidamente informado que el presupuesto dado es por la falla reportada y por el tipo de reparación al momento de recibir el dispositivo a reparar. Cualquier otro desperfecto encontrado en el dispositivo por el técnico, será informado al cliente para la aprobación de la reparación o cambio, indicando el valor adicional si fuera el caso.";
       const notaPartes = doc.splitTextToSize(nota, 170);
