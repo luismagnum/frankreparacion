@@ -406,29 +406,27 @@ button:hover {
 }
 
 #logout {
-  display: none; /* Oculto por defecto */
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 8px 15px;
   background-color: #f44336;
   color: white;
   border: none;
   border-radius: 5px;
+  padding: 10px 20px;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
+  margin-top: 10px;
   transition: background-color 0.3s, transform 0.3s;
-  z-index: 1000;
+  display: inline-block;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+#logout i {
+  margin-right: 8px;
 }
 
 #logout:hover {
   background-color: #c62828;
   transform: scale(1.05);
-}
-
-#logout i {
-  margin-right: 5px;
 }
 
 @media (max-width: 768px) {
@@ -590,3 +588,9 @@ button:hover {
   background-color: #c82333;
 }
 
+@media (max-width: 600px) {
+  #logout {
+    font-size: 12px;
+    padding: 8px 15px;
+  }
+}
