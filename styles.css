@@ -52,6 +52,7 @@ body {
 
 .subtitulo {
   font-size: 20px;
+  font-weight: bold;
   color: #333d5bc3;
   margin-top: 4px;
 }
@@ -404,7 +405,31 @@ button:hover {
   transform: scale(1.1);
 }
 
+#logout {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 15px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.3s;
+  z-index: 1000;
+}
 
+#logout:hover {
+  background-color: #c62828;
+  transform: scale(1.05);
+}
+
+#logout i {
+  margin-right: 5px;
+}
 
 @media (max-width: 768px) {
   .container {
@@ -422,6 +447,7 @@ button:hover {
 
   .subtitulo {
     font-size: 15px;
+    font-weight: bold;
   }
 
   .formulario {
